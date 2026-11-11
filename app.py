@@ -950,6 +950,7 @@ elif page == "🔐 Administración":
         ])
 
        
+      
         with tab1:
 
             st.subheader("Agregar videos")
@@ -963,38 +964,37 @@ elif page == "🔐 Administración":
 
             if uploaded_videos:
 
-                video_titles = {}
+                st.write("### Escribe el título de cada video")
+
+                titles = []
 
                 for i, video in enumerate(uploaded_videos):
 
-                    st.write(f"**Video {i + 1}: {video.name}**")
-
-                    video_titles[i] = st.text_input(
-                        "Escribe el título del video:",
-                        key=f"video_title_{i}"
+                    title = st.text_input(
+                        f"Título del video {i + 1}:",
+                        value="",
+                        placeholder="Escribe aquí el título que quieras mostrar",
+                        key=f"custom_title_{i}"
                     )
 
-                if st.button("Agregar videos"):
+                    titles.append(title)
 
-                    if all(title.strip() for title in video_titles.values()):
+                if st.button("Guardar videos"):
+
+                    if all(title.strip() for title in titles):
 
                         for i, video in enumerate(uploaded_videos):
 
                             st.session_state.videos.append({
-                                "name": video_titles[i].strip(),
+                                "name": titles[i].strip(),
                                 "data": video.getvalue()
                             })
 
-                        st.success(
-                            f"¡Se agregaron {len(uploaded_videos)} videos correctamente!"
-                        )
-
+                        st.success("¡Videos guardados correctamente!")
                         st.rerun()
 
                     else:
-                        st.warning(
-                            "Debes escribir un título para cada video."
-                        )
+                        st.error("Escribe un título para cada video.")
 
             st.divider()
             st.subheader("Videos disponibles")
@@ -1009,15 +1009,13 @@ elif page == "🔐 Administración":
                         st.write(video["name"])
 
                     with col2:
-                        if st.button(
-                            "Eliminar",
-                            key=f"delete_video_{i}"
-                        ):
+                        if st.button("Eliminar", key=f"delete_video_{i}"):
                             st.session_state.videos.pop(i)
                             st.rerun()
 
             else:
                 st.info("Todavía no hay videos agregados.")
+
 
 
         with tab2:
