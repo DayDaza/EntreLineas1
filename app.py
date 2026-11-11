@@ -1260,13 +1260,8 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-'''
 
-path = Path("/mnt/data/app_entre_lineas_actualizado.py")
-path.write_text(code, encoding="utf-8")
 
 # Basic syntax validation before sharing.
-compile(code, str(path), "exec")
 
-print(f"Archivo creado y validado: {path}")
 print(f"Líneas: {len(code.splitlines())}")
