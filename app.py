@@ -1261,5 +1261,3 @@ st.markdown(
 
 
 # Basic syntax validation before sharing.
-
-print(f"Líneas: {len(code.splitlines())}")
