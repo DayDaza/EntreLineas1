@@ -981,7 +981,6 @@ elif page == "🔐 Administración":
 
         with tab1:
 
-admin_supabase.storage.from_("Videos testimonios")
             uploaded_videos = st.file_uploader(
                 "Selecciona uno o varios videos:",
                 type=["mp4", "mov", "webm"],
