@@ -621,36 +621,36 @@ elif page == "🎥 Experiencias compartidas":
                 else:
                     st.warning("Por favor, escribe algo antes de enviar.")
 
-    with tab2:
+with tab2:
 
-        title("Videos y testimonios")
+    title("Videos y testimonios")
 
-        try:
-            respuesta_videos = (
-supabase.storage.from_("Videos testimonios")
-                .select("id, nombre, video_url, fecha")
-                .eq("tipo", "video")
-                .eq("publicado", True)
-                .order("fecha", desc=True)
-                .execute()
+    try:
+        respuesta_videos = (
+            supabase.table("testimonios")
+            .select("id, nombre, video_url, fecha")
+            .eq("tipo", "video")
+            .eq("publicado", True)
+            .order("fecha", desc=True)
+            .execute()
+        )
+
+        videos_publicados = respuesta_videos.data
+
+        if videos_publicados:
+            for video in videos_publicados:
+                st.subheader(video["nombre"])
+                st.video(video["video_url"])
+                st.divider()
+        else:
+            st.info(
+                "Todavía no hay videos publicados. "
+                "Próximamente encontrarás testimonios aquí."
             )
 
-            videos_publicados = respuesta_videos.data
-
-            if videos_publicados:
-                for video in videos_publicados:
-                    st.subheader(video["nombre"])
-                    st.video(video["video_url"])
-                    st.divider()
-            else:
-                st.info(
-                    "Todavía no hay videos publicados. "
-                    "Próximamente encontrarás testimonios aquí."
-                )
-
-        except Exception as error:
-            st.error("No pudimos cargar los videos.")
-            st.write(str(error))
+    except Exception as error:
+        st.error("No pudimos cargar los videos.")
+        st.write(str(error))
 
     st.caption(
         "Las experiencias enviadas requieren revisión antes de publicarse. "
@@ -992,8 +992,7 @@ elif page == "🔐 Administración":
 
         with tab1:
 
-            st.subheader("Agregar videos")
-
+admin_supabase.storage.from_("Videos testimonios")
             uploaded_videos = st.file_uploader(
                 "Selecciona uno o varios videos:",
                 type=["mp4", "mov", "webm"],
@@ -1040,7 +1039,7 @@ elif page == "🔐 Administración":
 
                                 # Subir el archivo al bucket público.
                                 supabase_admin.storage.from_(
-                                    "videos-testimonios"
+                                    "Videos testimonios"
                                 ).upload(
                                     nombre_archivo,
                                     video.getvalue(),
@@ -1058,7 +1057,7 @@ elif page == "🔐 Administración":
                                 # Obtener la URL pública del archivo.
                                 video_url = (
                                     supabase_admin.storage.from_(
-                                        "videos-testimonios"
+                                        "Videos testimonios"
                                     ).get_public_url(nombre_archivo)
                                 )
 
