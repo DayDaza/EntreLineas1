@@ -951,34 +951,36 @@ elif page == "🔐 Administración":
 
         with tab1:
 
-            st.subheader("Agregar un video")
+           
+st.subheader("Agregar videos")
 
-            uploaded_video = st.file_uploader(
-                "Selecciona un video desde tu dispositivo:",
-                type=["mp4", "mov", "webm"]
-            )
+uploaded_videos = st.file_uploader(
+    "Selecciona uno o varios videos:",
+    type=["mp4", "mov", "webm"],
+    accept_multiple_files=True,
+    key="multiple_videos"
+)
 
-            video_name = st.text_input(
-                "Título del video:"
-            )
+if st.button("Agregar videos"):
 
-            if st.button("Agregar video"):
+    if uploaded_videos:
 
-                if uploaded_video and video_name.strip():
+        added = 0
 
-                    st.session_state.videos.append({
-                        "name": video_name.strip(),
-                        "data": uploaded_video.getvalue()
-                    })
+        for video in uploaded_videos:
 
-                    st.success("Video agregado a esta sesión.")
-                else:
-                    st.warning(
-                        "Debes seleccionar un video y escribir su título."
-                    )
+            st.session_state.videos.append({
+                "name": video.name,
+                "data": video.getvalue()
+            })
 
-            st.divider()
-            st.subheader("Videos disponibles")
+            added += 1
+
+        st.success(f"¡Se agregaron {added} videos correctamente!")
+
+    else:
+        st.warning("Primero selecciona al menos un video.")
+
 
             if st.session_state.videos:
 
