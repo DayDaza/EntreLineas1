@@ -961,29 +961,40 @@ elif page == "🔐 Administración":
                 key="multiple_videos"
             )
 
-            if st.button("Agregar videos"):
+            if uploaded_videos:
 
-                if uploaded_videos:
+                video_titles = {}
 
-                    added = 0
+                for i, video in enumerate(uploaded_videos):
 
-                    for video in uploaded_videos:
+                    st.write(f"**Video {i + 1}: {video.name}**")
 
-                        st.session_state.videos.append({
-                            "name": video.name,
-                            "data": video.getvalue()
-                        })
-
-                        added += 1
-
-                    st.success(
-                        f"¡Se agregaron {added} videos correctamente!"
+                    video_titles[i] = st.text_input(
+                        "Escribe el título del video:",
+                        key=f"video_title_{i}"
                     )
 
-                else:
-                    st.warning(
-                        "Primero selecciona al menos un video."
-                    )
+                if st.button("Agregar videos"):
+
+                    if all(title.strip() for title in video_titles.values()):
+
+                        for i, video in enumerate(uploaded_videos):
+
+                            st.session_state.videos.append({
+                                "name": video_titles[i].strip(),
+                                "data": video.getvalue()
+                            })
+
+                        st.success(
+                            f"¡Se agregaron {len(uploaded_videos)} videos correctamente!"
+                        )
+
+                        st.rerun()
+
+                    else:
+                        st.warning(
+                            "Debes escribir un título para cada video."
+                        )
 
             st.divider()
             st.subheader("Videos disponibles")
