@@ -1,5 +1,8 @@
-import streamlit as st
+from pathlib import Path
+
+code = r'''import streamlit as st
 from supabase import create_client
+import uuid
 
 # -----------------------------------------
 # CONFIGURACIÓN
@@ -130,12 +133,8 @@ if "stories_pending" not in st.session_state:
 if "stories_public" not in st.session_state:
     st.session_state.stories_public = []
 
-if "videos" not in st.session_state:
-    st.session_state.videos = []
-
 if "quiz_answer" not in st.session_state:
     st.session_state.quiz_answer = None
-
 
 # -----------------------------------------
 # FUNCIONES
@@ -170,6 +169,30 @@ def reflection(question):
         f'<div class="quote">💭 {question}</div>',
         unsafe_allow_html=True
     )
+
+
+# -----------------------------------------
+# CONEXIÓN CON SUPABASE
+# -----------------------------------------
+
+@st.cache_resource
+def conectar_supabase():
+    return create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_KEY"]
+    )
+
+
+@st.cache_resource
+def conectar_supabase_admin():
+    return create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_SECRET_KEY"]
+    )
+
+
+# Conexión pública: se utiliza para consultar videos publicados.
+supabase = conectar_supabase()
 
 
 # -----------------------------------------
@@ -604,26 +627,38 @@ elif page == "🎥 Experiencias compartidas":
 
         title("Videos y testimonios")
 
-        if st.session_state.videos:
-            for video in st.session_state.videos:
-                st.subheader(video["name"])
-                st.video(video["data"])
-        else:
-            st.info(
-                "Próximamente encontrarás videos y testimonios "
-                "en este espacio."
+        try:
+            respuesta_videos = (
+                supabase.table("testimonios")
+                .select("id, nombre, video_url, fecha")
+                .eq("tipo", "video")
+                .eq("publicado", True)
+                .order("fecha", desc=True)
+                .execute()
             )
+
+            videos_publicados = respuesta_videos.data
+
+            if videos_publicados:
+                for video in videos_publicados:
+                    st.subheader(video["nombre"])
+                    st.video(video["video_url"])
+                    st.divider()
+            else:
+                st.info(
+                    "Todavía no hay videos publicados. "
+                    "Próximamente encontrarás testimonios aquí."
+                )
+
+        except Exception as error:
+            st.error("No pudimos cargar los videos.")
+            st.write(str(error))
 
     st.caption(
         "Las experiencias enviadas requieren revisión antes de publicarse. "
         "Evita incluir nombres, teléfonos, direcciones u otros datos "
         "personales. No compartas contenido íntimo de otras personas."
     )
-
-
-# -----------------------------------------
-# ZONA INTERACTIVA
-# -----------------------------------------
 
 
 # -----------------------------------------
@@ -876,6 +911,7 @@ elif page == "🎲 Zona interactiva":
     a construir relaciones más respetuosas y espacios más seguros.
     """)
 
+
 # -----------------------------------------
 # ORIENTACIÓN Y AYUDA
 # -----------------------------------------
@@ -940,17 +976,22 @@ elif page == "🔐 Administración":
         type="password"
     )
 
-    if password == "EntreLineas2026":
+    # La contraseña se guarda en Streamlit Secrets, nunca en el código.
+    if password and password == st.secrets["ADMIN_PASSWORD"]:
 
-        st.success("Acceso al panel de demostración.")
+        supabase_admin = conectar_supabase_admin()
+
+        st.success("Acceso al panel de administración.")
 
         tab1, tab2 = st.tabs([
             "🎬 Gestionar videos",
             "📖 Revisar experiencias"
         ])
 
-       
-      
+        # -----------------------------------------
+        # GESTIONAR VIDEOS
+        # -----------------------------------------
+
         with tab1:
 
             st.subheader("Agregar videos")
@@ -970,14 +1011,14 @@ elif page == "🔐 Administración":
 
                 for i, video in enumerate(uploaded_videos):
 
-                    title = st.text_input(
+                    title_video = st.text_input(
                         f"Título del video {i + 1}:",
                         value="",
                         placeholder="Escribe aquí el título que quieras mostrar",
                         key=f"custom_title_{i}"
                     )
 
-                    titles.append(title)
+                    titles.append(title_video)
 
                 if st.button("Guardar videos"):
 
@@ -985,38 +1026,174 @@ elif page == "🔐 Administración":
 
                         for i, video in enumerate(uploaded_videos):
 
-                            st.session_state.videos.append({
-                                "name": titles[i].strip(),
-                                "data": video.getvalue()
-                            })
+                            extension = (
+                                video.name.rsplit(".", 1)[-1].lower()
+                                if "." in video.name
+                                else "mp4"
+                            )
 
-                        st.success("¡Videos guardados correctamente!")
-                        st.rerun()
+                            nombre_archivo = (
+                                f"{uuid.uuid4().hex}.{extension}"
+                            )
+
+                            archivo_subido = False
+
+                            try:
+
+                                # Subir el archivo al bucket público.
+                                supabase_admin.storage.from_(
+                                    "videos-testimonios"
+                                ).upload(
+                                    nombre_archivo,
+                                    video.getvalue(),
+                                    file_options={
+                                        "content-type": (
+                                            video.type
+                                            or "application/octet-stream"
+                                        ),
+                                        "upsert": "false"
+                                    }
+                                )
+
+                                archivo_subido = True
+
+                                # Obtener la URL pública del archivo.
+                                video_url = (
+                                    supabase_admin.storage.from_(
+                                        "videos-testimonios"
+                                    ).get_public_url(nombre_archivo)
+                                )
+
+                                # Guardar título y URL en la tabla.
+                                supabase_admin.table(
+                                    "testimonios"
+                                ).insert({
+                                    "nombre": titles[i].strip(),
+                                    "tipo": "video",
+                                    "video_url": video_url,
+                                    "publicado": True
+                                }).execute()
+
+                                st.success(
+                                    f"¡{titles[i].strip()} se guardó correctamente!"
+                                )
+
+                            except Exception as error:
+
+                                # Si el archivo se subió pero falló el
+                                # registro en la tabla, borrar el archivo
+                                # para evitar dejarlo sin registro.
+                                if archivo_subido:
+                                    try:
+                                        supabase_admin.storage.from_(
+                                            "videos-testimonios"
+                                        ).remove([nombre_archivo])
+                                    except Exception:
+                                        pass
+
+                                st.error(
+                                    f"No se pudo guardar {video.name}: {error}"
+                                )
 
                     else:
-                        st.error("Escribe un título para cada video.")
+
+                        st.error(
+                            "Escribe un título para cada video."
+                        )
 
             st.divider()
+
+            # -----------------------------------------
+            # VIDEOS DISPONIBLES
+            # -----------------------------------------
+
             st.subheader("Videos disponibles")
 
-            if st.session_state.videos:
+            try:
 
-                for i, video in enumerate(st.session_state.videos):
+                respuesta_videos = (
+                    supabase_admin.table("testimonios")
+                    .select("id, nombre, video_url, fecha")
+                    .eq("tipo", "video")
+                    .order("fecha", desc=True)
+                    .execute()
+                )
 
-                    col1, col2 = st.columns([4, 1])
+                videos_guardados = respuesta_videos.data
 
-                    with col1:
-                        st.write(video["name"])
+                if videos_guardados:
 
-                    with col2:
-                        if st.button("Eliminar", key=f"delete_video_{i}"):
-                            st.session_state.videos.pop(i)
-                            st.rerun()
+                    for video in videos_guardados:
 
-            else:
-                st.info("Todavía no hay videos agregados.")
+                        col1, col2 = st.columns([4, 1])
 
+                        with col1:
+                            st.write(video["nombre"])
 
+                        with col2:
+
+                            if st.button(
+                                "Eliminar",
+                                key=f"delete_video_{video['id']}"
+                            ):
+
+                                try:
+
+                                    marcador = (
+                                        "/storage/v1/object/public/"
+                                        "videos-testimonios/"
+                                    )
+
+                                    if marcador not in video["video_url"]:
+                                        raise ValueError(
+                                            "No se pudo identificar la ruta "
+                                            "del archivo en Storage."
+                                        )
+
+                                    ruta_archivo = (
+                                        video["video_url"]
+                                        .split(marcador, 1)[1]
+                                        .split("?", 1)[0]
+                                    )
+
+                                    # Eliminar primero el archivo del bucket.
+                                    supabase_admin.storage.from_(
+                                        "videos-testimonios"
+                                    ).remove([ruta_archivo])
+
+                                    # Eliminar después el registro de la tabla.
+                                    supabase_admin.table(
+                                        "testimonios"
+                                    ).delete().eq(
+                                        "id", video["id"]
+                                    ).execute()
+
+                                    st.success(
+                                        "Video eliminado correctamente."
+                                    )
+
+                                    st.rerun()
+
+                                except Exception as error:
+
+                                    st.error(
+                                        f"No se pudo eliminar el video: {error}"
+                                    )
+
+                        st.video(video["video_url"])
+
+                else:
+
+                    st.info("Todavía no hay videos agregados.")
+
+            except Exception as error:
+
+                st.error("No pudimos cargar los videos guardados.")
+                st.write(str(error))
+
+        # -----------------------------------------
+        # REVISAR EXPERIENCIAS ESCRITAS
+        # -----------------------------------------
 
         with tab2:
 
@@ -1036,42 +1213,35 @@ elif page == "🔐 Administración":
                     col1, col2 = st.columns(2)
 
                     with col1:
+
                         if st.button(
                             "Aprobar",
                             key=f"approve_{i}"
                         ):
+
                             st.session_state.stories_public.append(story)
                             st.session_state.stories_pending.pop(i)
                             st.rerun()
 
                     with col2:
+
                         if st.button(
                             "Rechazar",
                             key=f"reject_{i}"
                         ):
+
                             st.session_state.stories_pending.pop(i)
                             st.rerun()
 
             else:
+
                 st.info(
                     "No hay experiencias pendientes de revisión."
                 )
 
     elif password:
+
         st.error("Contraseña incorrecta.")
-
-    st.caption(
-        "Contraseña de demostración: EntreLineas2026. "
-        "Cámbiala antes de publicar el proyecto. "
-        "Este panel no cuenta con autenticación segura."
-    )
-
-    st.warning(
-        "Esta versión de demostración mantiene los videos y las "
-        "experiencias en la sesión de la aplicación. Para conservarlos "
-        "permanentemente y compartirlos entre visitantes se necesita "
-        "una base de datos y almacenamiento de archivos."
-    )
 
 
 # -----------------------------------------
@@ -1090,29 +1260,13 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+'''
 
+path = Path("/mnt/data/app_entre_lineas_actualizado.py")
+path.write_text(code, encoding="utf-8")
 
-@st.cache_resource
-def conectar_supabase():
-    return create_client(
-        st.secrets["SUPABASE_URL"],
-        st.secrets["SUPABASE_KEY"]
-    )
+# Basic syntax validation before sharing.
+compile(code, str(path), "exec")
 
-supabase = conectar_supabase()
-
-try:
-    respuesta = (
-        supabase.table("testimonios")
-
-        .select("id")
-        .limit(1)
-        .execute()
-    )
-
-    st.success("¡Conexión con Supabase exitosa!")
-
-except Exception as error:
-    st.error("No pudimos conectar con Supabase.")
-    st.write(str(error))
-
+print(f"Archivo creado y validado: {path}")
+print(f"Líneas: {len(code.splitlines())}")
