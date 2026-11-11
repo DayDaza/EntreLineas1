@@ -1109,6 +1109,9 @@ elif page == "🔐 Administración":
 
                 if videos_guardados:
 
+
+                if videos_guardados:
+
                     for video in videos_guardados:
 
                         col1, col2 = st.columns([4, 1])
@@ -1117,67 +1120,63 @@ elif page == "🔐 Administración":
                             st.write(video["nombre"])
 
                         with col2:
+                            if st.button(
+                                "Eliminar",
+                                key=f"delete_video_{video['id']}"
+                            ):
+                                try:
+                                    ruta_url = urlparse(
+                                        video["video_url"]
+                                    ).path
 
-                                                       
-                        if st.button(
-                            "Eliminar",
-                            key=f"delete_video_{video['id']}"
-                        ):
-                            try:
-                                ruta_url = urlparse(
-                                    video["video_url"]
-                                ).path
+                                    prefijo = "/storage/v1/object/public/"
 
-                                prefijo = "/storage/v1/object/public/"
+                                    if prefijo not in ruta_url:
+                                        raise ValueError(
+                                            "No se pudo identificar la ruta."
+                                        )
 
-                                if prefijo not in ruta_url:
-                                    raise ValueError(
-                                        "No se pudo identificar la ruta."
+                                    ruta_completa = unquote(
+                                        ruta_url.split(prefijo, 1)[1]
                                     )
 
-                                ruta_completa = unquote(
-                                    ruta_url.split(prefijo, 1)[1]
-                                )
+                                    partes = ruta_completa.split("/", 1)
 
-                                partes = ruta_completa.split("/", 1)
+                                    if (
+                                        len(partes) != 2
+                                        or partes[0] != "Videos testimonios"
+                                    ):
+                                        raise ValueError(
+                                            "El bucket o la ruta no coinciden."
+                                        )
 
-                                if (
-                                    len(partes) != 2
-                                    or partes[0] != "Videos testimonios"
-                                ):
-                                    raise ValueError(
-                                        "El bucket o la ruta no coinciden."
+                                    ruta_archivo = partes[1]
+
+                                    supabase_admin.storage.from_(
+                                        "Videos testimonios"
+                                    ).remove([ruta_archivo])
+
+                                    supabase_admin.table(
+                                        "testimonios"
+                                    ).delete().eq(
+                                        "id", video["id"]
+                                    ).execute()
+
+                                    st.success(
+                                        "Video eliminado correctamente."
                                     )
+                                    st.rerun()
 
-                                ruta_archivo = partes[1]
-
-                                supabase_admin.storage.from_(
-                                    "Videos testimonios"
-                                ).remove([ruta_archivo])
-
-                                supabase_admin.table(
-                                    "testimonios"
-                                ).delete().eq(
-                                    "id", video["id"]
-                                ).execute()
-
-                                st.success("Video eliminado correctamente.")
-                                st.rerun()
-
-                            except Exception as error:
-                                st.error(
-                                    f"No se pudo eliminar el video: {error}"
-                                )
-
-                                    st.error(
-                                        f"No se pudo eliminar el video: {error}"
-                                    )
-
+                                except Exception as error:
                                     st.error(
                                         f"No se pudo eliminar el video: {error}"
                                     )
 
                         st.video(video["video_url"])
+
+                else:
+                    st.info("Todavía no hay videos agregados.")
+
 
                 else:
 
