@@ -1091,38 +1091,27 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-import streamlit as st
-from supabase import create_client
-
-SUPABASE_URL = st.secrets["https://gwzqgyhzvsryxfsaseog.supabase.co/rest/v1/"]
-SUPABASE_KEY = st.secrets["sb_publishable_k2gMI1YOyTeWHv8MBC_gFw_K6aZfmMn"]
-
-supabase = create_client(
-    SUPABASE_https://gwzqgyhzvsryxfsaseog.supabase.co/rest/v1/,
-    SUPABASE_sb_publishable_k2gMI1YOyTeWHv8MBC_gFw_K6aZfmMn
-)
-
-from supabase import create_client
-import streamlit as st
 
 @st.cache_resource
 def conectar_supabase():
     return create_client(
-        st.secrets["SUPABASE_https://gwzqgyhzvsryxfsaseog.supabase.co/rest/v1/"],
-        st.secrets["SUPABASE_sb_publishable_k2gMI1YOyTeWHv8MBC_gFw_K6aZfmMn"]
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_KEY"]
     )
 
 supabase = conectar_supabase()
-st.success("Conexión con Supabase preparada correctamente.")
 
 try:
-    respuesta = supabase.table("testimonios") \
-        .select("id") \
-        .limit(1) \
+    respuesta = (
+        supabase.table("testimonios")
+        .select("id")
+        .limit(1)
         .execute()
+    )
 
     st.success("¡Conexión con Supabase exitosa!")
 
 except Exception as error:
     st.error("No pudimos conectar con Supabase.")
     st.write(str(error))
+
