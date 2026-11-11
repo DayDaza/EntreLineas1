@@ -625,175 +625,256 @@ elif page == "🎥 Experiencias compartidas":
 # ZONA INTERACTIVA
 # -----------------------------------------
 
+
+# -----------------------------------------
+# ZONA INTERACTIVA: DILEMAS ABIERTOS
+# -----------------------------------------
+
 elif page == "🎲 Zona interactiva":
 
     title(
         "Zona interactiva",
-        "Piensa, decide y reflexiona. No siempre existe una respuesta sencilla."
+        "Historias que invitan a pensar, sentir y ponerse en el lugar del otro."
     )
 
-    st.subheader("💭 Dilemas de la vida cotidiana")
+    st.markdown("""
+    Cada historia presenta una situación que podría ocurrir en la vida
+    cotidiana de un estudiante universitario.
+
+    Lee con atención, imagina que estás viviendo esa situación y expresa
+    tu opinión con libertad. No se trata de encontrar una respuesta
+    perfecta, sino de reflexionar sobre nuestras decisiones.
+    """)
 
     dilemmas = [
         {
-            "title": "1. El secreto del grupo",
-            "situation": (
-                "Un compañero comparte una captura de pantalla de una "
-                "conversación privada de otra estudiante. Todos comienzan "
-                "a burlarse. Tú sabes que la información no debía compartirse."
-            ),
-            "question": "¿Qué harías?",
-            "options": [
-                "Compartir la captura para no quedar excluido.",
-                "No participar y pedir que eliminen la captura.",
-                "Reírme de la situación sin compartirla."
-            ],
-            "reflection": (
-                "Compartir contenido privado sin permiso puede afectar "
-                "la confianza y la privacidad de una persona."
-            )
+            "title": "01. El secreto del grupo",
+            "story": """
+            ### Una conversación que nunca debió salir del chat
+
+            Laura es una estudiante universitaria que suele compartir
+            sus preocupaciones en un grupo privado con sus compañeros.
+            Una noche, después de una discusión familiar, escribe un
+            mensaje contando algo muy personal y pide que nadie lo comparta.
+
+            Al día siguiente, uno de sus compañeros toma una captura
+            de pantalla y la envía a otro grupo. Poco después, varias
+            personas comienzan a hacer comentarios y bromas sobre lo
+            que Laura había contado.
+
+            Laura se entera de lo ocurrido y deja de participar en clase.
+            Algunos compañeros saben quién compartió la captura, pero
+            prefieren guardar silencio porque no quieren tener problemas
+            con el grupo.
+            """,
+            "question": """
+            Si fueras parte de ese grupo, ¿qué harías frente a lo ocurrido?
+            ¿Cómo crees que podrías apoyar a Laura sin empeorar la situación?
+            """
         },
         {
-            "title": "2. La cuenta anónima",
-            "situation": (
-                "Aparece una cuenta anónima en redes sociales que publica "
-                "rumores y comentarios ofensivos sobre estudiantes "
-                "de tu universidad."
-            ),
-            "question": "¿Cómo actuarías?",
-            "options": [
-                "Seguir la cuenta porque parece entretenida.",
-                "Reportar el contenido y apoyar a las personas afectadas.",
-                "Comentar las publicaciones para aumentar su alcance."
-            ],
-            "reflection": (
-                "El anonimato no elimina la responsabilidad por las "
-                "acciones realizadas en internet."
-            )
+            "title": "02. La cuenta anónima",
+            "story": """
+            ### Detrás de una pantalla también hay personas
+
+            Durante varias semanas, comienza a circular una cuenta anónima
+            en redes sociales de una universidad. Al principio publica
+            memes y situaciones graciosas relacionadas con la vida
+            estudiantil.
+
+            Sin embargo, poco a poco empieza a publicar fotografías
+            de estudiantes acompañadas de rumores, burlas y comentarios
+            sobre su apariencia física y su vida personal.
+
+            Andrés descubre que una de las publicaciones habla de él.
+            Aunque intenta ignorarla, recibe mensajes de personas que
+            se burlan de su situación. Sus amigos le dicen que no se
+            preocupe porque todo es parte de las redes sociales.
+
+            Una compañera sabe quién administra la cuenta, pero tiene
+            miedo de denunciarlo porque podría convertirse en el próximo
+            objetivo.
+            """,
+            "question": """
+            ¿Cómo actuarías si fueras Andrés o si conocieras a la persona
+            que administra la cuenta? ¿Qué responsabilidad tienen quienes
+            comparten o comentan esas publicaciones?
+            """
         },
         {
-            "title": "3. Una prueba de amor",
-            "situation": (
-                "Tu pareja te pide las contraseñas de tus redes sociales "
-                "y afirma que, si no las compartes, significa que ocultas algo."
-            ),
-            "question": "¿Qué decisión tomarías?",
-            "options": [
-                "Entregar las contraseñas para evitar una discusión.",
-                "Explicar que la privacidad también existe dentro de una relación.",
-                "Dejar de utilizar las redes sociales."
-            ],
-            "reflection": (
-                "La confianza no exige renunciar a la privacidad. "
-                "Los límites personales deben respetarse."
-            )
+            "title": "03. Una prueba de amor",
+            "story": """
+            ### ¿Amar significa compartirlo todo?
+
+            Camila lleva varios meses en una relación. Al principio,
+            todo parece funcionar bien, pero su pareja comienza a pedirle
+            que comparta la contraseña de sus redes sociales.
+
+            Le dice que las parejas no deberían tener secretos y que,
+            si realmente lo ama, no tendría ningún problema en mostrarle
+            sus conversaciones.
+
+            Camila se siente incómoda porque considera que tiene derecho
+            a conservar su privacidad. Sin embargo, teme que negarse
+            provoque una discusión o que su pareja piense que está
+            ocultando algo.
+
+            Una amiga le aconseja que entregue las contraseñas para
+            demostrar confianza, mientras otra le recuerda que una
+            relación también necesita límites.
+            """,
+            "question": """
+            ¿Qué le aconsejarías a Camila? ¿Dónde termina la confianza
+            y dónde comienza el control dentro de una relación?
+            """
         },
         {
-            "title": "4. La presión de los demás",
-            "situation": (
-                "En una fiesta, tus amigos insisten en que bebas o participes "
-                "en una situación íntima que no deseas."
-            ),
-            "question": "¿Qué harías?",
-            "options": [
-                "Aceptar para evitar que se burlen de mí.",
-                "Expresar que no quiero y mantener mi decisión.",
-                "Hacerlo solamente para no parecer diferente."
-            ],
-            "reflection": (
-                "Tienes derecho a decir no. La presión social no debe "
-                "determinar tus decisiones personales."
-            )
+            "title": "04. La presión de los demás",
+            "story": """
+            ### Cuando decir que no parece difícil
+
+            Mateo asiste a una fiesta con varios compañeros de la
+            universidad. Durante la noche, algunos amigos comienzan
+            a insistirle para que consuma alcohol y participe en una
+            situación íntima con otra persona.
+
+            Mateo no quiere hacerlo. Sin embargo, sus amigos empiezan
+            a decirle que es aburrido, que debe dejar de comportarse
+            como un niño y que no debería tener miedo de experimentar.
+
+            Aunque se siente incómodo, comienza a pensar que quizás
+            debería aceptar para evitar las burlas y no sentirse
+            excluido del grupo.
+
+            Una amiga nota que Mateo está incómodo y le pregunta
+            si realmente quiere participar.
+            """,
+            "question": """
+            ¿Qué decisión tomarías si estuvieras en el lugar de Mateo?
+            ¿Por qué puede ser difícil establecer límites cuando existe
+            presión social?
+            """
         },
         {
-            "title": "5. La sonrisa que engaña",
-            "situation": (
-                "Un amigo suele mostrarse alegre, pero un día te dice "
-                "que está cansado de fingir que todo está bien."
-            ),
-            "question": "¿Cómo responderías?",
-            "options": [
-                "Decirle que no exagere.",
-                "Escucharlo sin juzgarlo y animarlo a buscar apoyo.",
-                "Cambiar de tema para evitar una conversación incómoda."
-            ],
-            "reflection": (
-                "Escuchar con empatía puede ser un primer paso importante. "
-                "No tienes que resolverlo todo: también puedes ayudarle "
-                "a encontrar apoyo profesional."
-            )
+            "title": "05. La sonrisa que engaña",
+            "story": """
+            ### A veces, quien más sonríe también necesita ayuda
+
+            Valentina es conocida en su universidad por ser una persona
+            alegre, participativa y siempre dispuesta a ayudar a sus amigos.
+            Sin embargo, durante las últimas semanas ha comenzado a
+            aislarse y a faltar a algunas clases.
+
+            Un día, después de una jornada académica, se queda conversando
+            con Daniel y le confiesa que está agotada emocionalmente.
+            Le cuenta que siente mucha presión por sus estudios, por las
+            expectativas de su familia y por intentar demostrar que
+            puede con todo.
+
+            Daniel no sabe qué responder. Quiere ayudarla, pero teme
+            decir algo incorrecto. Otros compañeros le han comentado
+            que Valentina siempre parece estar bien, así que seguramente
+            está exagerando.
+            """,
+            "question": """
+            ¿Cómo responderías si fueras Daniel? ¿Qué significa escuchar
+            a alguien sin juzgarlo y de qué manera podrías acompañar
+            a Valentina?
+            """
         },
         {
-            "title": "6. Compararse hasta desaparecer",
-            "situation": (
-                "Una estudiante pasa horas comparando su cuerpo, su vida "
-                "y sus logros con los de personas que sigue en redes sociales. "
-                "Cada vez se siente menos satisfecha consigo misma."
-            ),
-            "question": "¿Qué podría ayudar?",
-            "options": [
-                "Seguir comparándose para intentar mejorar.",
-                "Recordar que las redes muestran una parte seleccionada "
-                "de la realidad y cuidar su bienestar digital.",
-                "Intentar parecerse exactamente a esas personas."
-            ],
-            "reflection": (
-                "El contenido de redes no representa necesariamente "
-                "la vida completa de quienes lo publican."
-            )
+            "title": "06. Compararse hasta desaparecer",
+            "story": """
+            ### La vida perfecta que aparece en una pantalla
+
+            Mariana pasa gran parte de su tiempo en redes sociales.
+            Todos los días observa fotografías y videos de personas
+            que muestran viajes, logros académicos, cuerpos que considera
+            perfectos y estilos de vida aparentemente increíbles.
+
+            Poco a poco comienza a comparar su apariencia, sus resultados
+            académicos y su situación económica con lo que ve en internet.
+            Aunque sabe que las publicaciones no muestran toda la realidad,
+            siente que su propia vida no es suficiente.
+
+            Deja de publicar fotografías porque no le gusta cómo se ve
+            y comienza a evitar reuniones con sus amigos. Una compañera
+            nota el cambio y le pregunta si se encuentra bien.
+
+            Mariana responde que simplemente necesita esforzarse más
+            para llegar a ser como las personas que sigue.
+            """,
+            "question": """
+            ¿Qué le dirías a Mariana? ¿Cómo pueden influir las redes
+            sociales en la autoestima y qué cambios podrían ayudarla
+            a construir una relación más saludable con ellas?
+            """
         }
     ]
 
+    if "dilemma_answers" not in st.session_state:
+        st.session_state.dilemma_answers = {}
+
     for index, dilemma in enumerate(dilemmas):
 
-        with st.expander(dilemma["title"]):
+        with st.expander(dilemma["title"], expanded=False):
 
-            st.write(dilemma["situation"])
-            st.markdown("**" + dilemma["question"] + "**")
+            st.markdown(dilemma["story"])
 
-            selected = st.radio(
-                "Selecciona tu respuesta:",
-                dilemma["options"],
-                key=f"dilemma_{index}"
-            )
+            st.divider()
 
-            if st.button(
-                "Ver reflexión",
-                key=f"reflection_{index}"
-            ):
-                st.info(dilemma["reflection"])
+            st.markdown("### 💭 Tu espacio de reflexión")
+
+            st.write(dilemma["question"])
+
+            with st.form(key=f"dilemma_form_{index}"):
+
+                answer = st.text_area(
+                    "Escribe tu respuesta:",
+                    placeholder=(
+                        "Puedes expresar lo que piensas, cómo te sentirías "
+                        "y qué harías en esta situación..."
+                    ),
+                    height=160,
+                    key=f"dilemma_text_{index}"
+                )
+
+                submitted = st.form_submit_button(
+                    "Enviar mi reflexión"
+                )
+
+                if submitted:
+
+                    if answer.strip():
+
+                        st.session_state.dilemma_answers[index] = (
+                            answer.strip()
+                        )
+
+                        st.success(
+                            "¡Tu reflexión ha sido registrada en esta sesión!"
+                        )
+
+                    else:
+
+                        st.warning(
+                            "Escribe tu reflexión antes de enviarla."
+                        )
+
+            if index in st.session_state.dilemma_answers:
+
+                st.caption("Tu última reflexión está registrada.")
 
     st.divider()
 
-    title("🧠 Comprueba lo que sabes")
+    st.markdown("### 💜 Para pensar...")
 
-    st.write(
-        "Una persona comparte una fotografía privada de otra sin "
-        "su autorización. ¿Cuál es la acción más adecuada?"
-    )
-
-    answer = st.radio(
-        "Selecciona una respuesta:",
-        [
-            "Compartirla con más personas.",
-            "No difundirla y reportar la situación.",
-            "Guardar la fotografía para compartirla después."
-        ],
-        key="quiz_question"
-    )
-
-    if st.button("Comprobar respuesta"):
-        if answer == "No difundirla y reportar la situación.":
-            st.success(
-                "¡Correcto! Respetar la privacidad y actuar "
-                "responsablemente ayuda a prevenir el daño."
-            )
-        else:
-            st.warning(
-                "Inténtalo nuevamente. Recuerda que compartir "
-                "contenido privado sin permiso puede causar daño."
-            )
-
+    st.markdown("""
+    Las situaciones que vivimos no siempre tienen soluciones sencillas.
+    Escuchar otras perspectivas, reconocer nuestras emociones y
+    comprender las consecuencias de nuestras decisiones nos ayuda
+    a construir relaciones más respetuosas y espacios más seguros.
+    """)
 
 # -----------------------------------------
 # ORIENTACIÓN Y AYUDA
