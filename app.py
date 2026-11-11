@@ -949,44 +949,48 @@ elif page == "🔐 Administración":
             "📖 Revisar experiencias"
         ])
 
+       
         with tab1:
 
-           
-st.subheader("Agregar videos")
+            st.subheader("Agregar videos")
 
-uploaded_videos = st.file_uploader(
-    "Selecciona uno o varios videos:",
-    type=["mp4", "mov", "webm"],
-    accept_multiple_files=True,
-    key="multiple_videos"
-)
+            uploaded_videos = st.file_uploader(
+                "Selecciona uno o varios videos:",
+                type=["mp4", "mov", "webm"],
+                accept_multiple_files=True,
+                key="multiple_videos"
+            )
 
-if st.button("Agregar videos"):
+            if st.button("Agregar videos"):
 
-    if uploaded_videos:
+                if uploaded_videos:
 
-        added = 0
+                    added = 0
 
-        for video in uploaded_videos:
+                    for video in uploaded_videos:
 
-            st.session_state.videos.append({
-                "name": video.name,
-                "data": video.getvalue()
-            })
+                        st.session_state.videos.append({
+                            "name": video.name,
+                            "data": video.getvalue()
+                        })
 
-            added += 1
+                        added += 1
 
-        st.success(f"¡Se agregaron {added} videos correctamente!")
+                    st.success(
+                        f"¡Se agregaron {added} videos correctamente!"
+                    )
 
-    else:
-        st.warning("Primero selecciona al menos un video.")
+                else:
+                    st.warning(
+                        "Primero selecciona al menos un video."
+                    )
 
+            st.divider()
+            st.subheader("Videos disponibles")
 
             if st.session_state.videos:
 
-                for i, video in enumerate(
-                    st.session_state.videos
-                ):
+                for i, video in enumerate(st.session_state.videos):
 
                     col1, col2 = st.columns([4, 1])
 
@@ -1003,6 +1007,7 @@ if st.button("Agregar videos"):
 
             else:
                 st.info("Todavía no hay videos agregados.")
+
 
         with tab2:
 
