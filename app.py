@@ -1118,45 +1118,46 @@ elif page == "🔐 Administración":
 
                         with col2:
 
-                            if st.button(
+                                                        if st.button(
                                 "Eliminar",
                                 key=f"delete_video_{video['id']}"
                             ):
-
                                 try:
-
-                                  ruta_url = urlparse(video["video_url"]).path
-
-prefijo = "/storage/v1/object/public/"
-
-if prefijo not in ruta_url:
-    raise ValueError(
-        "No se pudo identificar la ruta del archivo."
-    )
-
-ruta_completa = unquote(
-    ruta_url.split(prefijo, 1)[1]
-)
-
-partes = ruta_completa.split("/", 1)
-
-if len(partes) != 2 or partes[0] != "Videos testimonios":
-    raise ValueError(
-        "El bucket o la ruta del video no coinciden."
-    )
-
-ruta_archivo = partes[1]
+                                    ruta_url = urlparse(
                                         video["video_url"]
-                                        .split(marcador, 1)[1]
-                                        .split("?", 1)[0]
+                                    ).path
+
+                                    prefijo = "/storage/v1/object/public/"
+
+                                    if prefijo not in ruta_url:
+                                        raise ValueError(
+                                            "No se pudo identificar "
+                                            "la ruta del archivo."
+                                        )
+
+                                    ruta_completa = unquote(
+                                        ruta_url.split(prefijo, 1)[1]
                                     )
 
-                                    # Eliminar primero el archivo del bucket.
+                                    partes = ruta_completa.split("/", 1)
+
+                                    if (
+                                        len(partes) != 2
+                                        or partes[0] != "Videos testimonios"
+                                    ):
+                                        raise ValueError(
+                                            "El bucket o la ruta "
+                                            "no coinciden."
+                                        )
+
+                                    ruta_archivo = partes[1]
+
+                                    # Eliminar archivo de Storage
                                     supabase_admin.storage.from_(
-                                        "videos-testimonios"
+                                        "Videos testimonios"
                                     ).remove([ruta_archivo])
 
-                                    # Eliminar después el registro de la tabla.
+                                    # Eliminar registro de la tabla
                                     supabase_admin.table(
                                         "testimonios"
                                     ).delete().eq(
@@ -1170,6 +1171,9 @@ ruta_archivo = partes[1]
                                     st.rerun()
 
                                 except Exception as error:
+                                    st.error(
+                                        f"No se pudo eliminar el video: {error}"
+                                    )
 
                                     st.error(
                                         f"No se pudo eliminar el video: {error}"
