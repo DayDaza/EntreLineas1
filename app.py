@@ -557,19 +557,12 @@ elif page == "🌱 Salud mental y bienestar":
 # EXPERIENCIAS COMPARTIDAS
 # -----------------------------------------
 
-elif page == "🎥 Experiencias compartidas":
+elif page == "💬 Experiencias compartidas":
 
-    title(
-        "Experiencias compartidas",
-        "Cada experiencia merece ser escuchada con respeto."
-    )
-
-    st.write(
-        "Este espacio permite compartir reflexiones y experiencias "
-        "relacionadas con los temas de la plataforma."
-    )
-
-    tab1, tab2 = st.tabs(["📖 Historias escritas", "🎬 Videos"])
+    tab1, tab2 = st.tabs([
+        "📖 Historias escritas",
+        "🎬 Videos"
+    ])
 
     with tab1:
 
@@ -621,47 +614,43 @@ elif page == "🎥 Experiencias compartidas":
                 else:
                     st.warning("Por favor, escribe algo antes de enviar.")
 
-with tab2:
+    with tab2:
 
-    title("Videos y testimonios")
+        title("Videos y testimonios")
 
-    try:
-        respuesta_videos = (
-            supabase.table("testimonios")
-            .select("id, nombre, video_url, fecha")
-            .eq("tipo", "video")
-            .eq("publicado", True)
-            .order("fecha", desc=True)
-            .execute()
-        )
-
-        videos_publicados = respuesta_videos.data
-
-        if videos_publicados:
-            for video in videos_publicados:
-                st.subheader(video["nombre"])
-                st.video(video["video_url"])
-                st.divider()
-        else:
-            st.info(
-                "Todavía no hay videos publicados. "
-                "Próximamente encontrarás testimonios aquí."
+        try:
+            respuesta_videos = (
+                supabase.table("testimonios")
+                .select("id, nombre, video_url, fecha")
+                .eq("tipo", "video")
+                .eq("publicado", True)
+                .order("fecha", desc=True)
+                .execute()
             )
 
-    except Exception as error:
-        st.error("No pudimos cargar los videos.")
-        st.write(str(error))
+            videos_publicados = respuesta_videos.data
 
-    st.caption(
-        "Las experiencias enviadas requieren revisión antes de publicarse. "
-        "Evita incluir nombres, teléfonos, direcciones u otros datos "
-        "personales. No compartas contenido íntimo de otras personas."
-    )
+            if videos_publicados:
+                for video in videos_publicados:
+                    st.subheader(video["nombre"])
+                    st.video(video["video_url"])
+                    st.divider()
+            else:
+                st.info(
+                    "Todavía no hay videos publicados. "
+                    "Próximamente encontrarás testimonios aquí."
+                )
 
+        except Exception as error:
+            st.error("No pudimos cargar los videos.")
+            st.write(str(error))
 
-# -----------------------------------------
-# ZONA INTERACTIVA: DILEMAS ABIERTOS
-# -----------------------------------------
+        st.caption(
+            "Las experiencias enviadas requieren revisión antes de publicarse. "
+            "Evita incluir nombres, teléfonos, direcciones u otros datos "
+            "personales. No compartas contenido íntimo de otras personas."
+        )
+
 
 elif page == "🎲 Zona interactiva":
 
