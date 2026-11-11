@@ -1,3 +1,4 @@
+from urllib.parse import unquote, urlparse
 import streamlit as st
 from supabase import create_client
 import uuid
@@ -1124,18 +1125,27 @@ elif page == "🔐 Administración":
 
                                 try:
 
-                                    marcador = (
-                                        "/storage/v1/object/public/"
-                                        "videos-testimonios/"
-                                    )
+                                  ruta_url = urlparse(video["video_url"]).path
 
-                                    if marcador not in video["video_url"]:
-                                        raise ValueError(
-                                            "No se pudo identificar la ruta "
-                                            "del archivo en Storage."
-                                        )
+prefijo = "/storage/v1/object/public/"
 
-                                    ruta_archivo = (
+if prefijo not in ruta_url:
+    raise ValueError(
+        "No se pudo identificar la ruta del archivo."
+    )
+
+ruta_completa = unquote(
+    ruta_url.split(prefijo, 1)[1]
+)
+
+partes = ruta_completa.split("/", 1)
+
+if len(partes) != 2 or partes[0] != "Videos testimonios":
+    raise ValueError(
+        "El bucket o la ruta del video no coinciden."
+    )
+
+ruta_archivo = partes[1]
                                         video["video_url"]
                                         .split(marcador, 1)[1]
                                         .split("?", 1)[0]
