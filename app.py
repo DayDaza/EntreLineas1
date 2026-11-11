@@ -1114,3 +1114,15 @@ def conectar_supabase():
 
 supabase = conectar_supabase()
 st.success("Conexión con Supabase preparada correctamente.")
+
+try:
+    respuesta = supabase.table("testimonios") \
+        .select("id") \
+        .limit(1) \
+        .execute()
+
+    st.success("¡Conexión con Supabase exitosa!")
+
+except Exception as error:
+    st.error("No pudimos conectar con Supabase.")
+    st.write(str(error))
