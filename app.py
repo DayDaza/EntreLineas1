@@ -627,7 +627,7 @@ elif page == "🎥 Experiencias compartidas":
 
         try:
             respuesta_videos = (
-                supabase.table("testimonios")
+                supabase.table("Videos testimonios")
                 .select("id, nombre, video_url, fecha")
                 .eq("tipo", "video")
                 .eq("publicado", True)
