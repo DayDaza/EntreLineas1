@@ -1090,3 +1090,14 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+import streamlit as st
+from supabase import create_client
+
+SUPABASE_URL = st.secrets["https://gwzqgyhzvsryxfsaseog.supabase.co/rest/v1/"]
+SUPABASE_KEY = st.secrets["sb_publishable_k2gMI1YOyTeWHv8MBC_gFw_K6aZfmMn"]
+
+supabase = create_client(
+    SUPABASE_https://gwzqgyhzvsryxfsaseog.supabase.co/rest/v1/,
+    SUPABASE_sb_publishable_k2gMI1YOyTeWHv8MBC_gFw_K6aZfmMn
+)
