@@ -1095,7 +1095,11 @@ st.markdown(
 @st.cache_resource
 def conectar_supabase():
     return create_client(
-        st.secrets["SUPABASE_URL"],
+        video_url = supabase.storage.from_(
+    "videos-testimonios"
+).get_public_url(nombre_archivo)
+
+st.video(video_url),
         st.secrets["SUPABASE_KEY"]
     )
 
