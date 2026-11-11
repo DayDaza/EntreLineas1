@@ -1101,3 +1101,16 @@ supabase = create_client(
     SUPABASE_https://gwzqgyhzvsryxfsaseog.supabase.co/rest/v1/,
     SUPABASE_sb_publishable_k2gMI1YOyTeWHv8MBC_gFw_K6aZfmMn
 )
+
+from supabase import create_client
+import streamlit as st
+
+@st.cache_resource
+def conectar_supabase():
+    return create_client(
+        st.secrets["SUPABASE_https://gwzqgyhzvsryxfsaseog.supabase.co/rest/v1/"],
+        st.secrets["SUPABASE_sb_publishable_k2gMI1YOyTeWHv8MBC_gFw_K6aZfmMn"]
+    )
+
+supabase = conectar_supabase()
+st.success("Conexión con Supabase preparada correctamente.")
