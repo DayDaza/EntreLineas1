@@ -1,5 +1,3 @@
-from pathlib import Path
-
 code = r import streamlit as st
 from supabase import create_client
 import uuid
