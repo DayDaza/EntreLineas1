@@ -617,41 +617,42 @@ elif page == "💬 Experiencias compartidas":
 
     with tab2:
 
-        title("Videos y testimonios")
+    st.success("La pestaña de videos está funcionando.")
 
-        try:
-            respuesta_videos = (
-                supabase.table("testimonios")
-                .select("id, nombre, video_url, fecha")
-                .eq("tipo", "video")
-                .eq("publicado", True)
-                .order("fecha", desc=True)
-                .execute()
-            )
+    title("Videos y testimonios")
 
-            videos_publicados = respuesta_videos.data
+    st.write("Estamos intentando conectar con Supabase.")
 
-            if videos_publicados:
-                for video in videos_publicados:
-                    st.subheader(video["nombre"])
-                    st.video(video["video_url"])
-                    st.divider()
-            else:
-                st.info(
-                    "Todavía no hay videos publicados. "
-                    "Próximamente encontrarás testimonios aquí."
-                )
-
-        except Exception as error:
-            st.error("No pudimos cargar los videos.")
-            st.write(str(error))
-
-        st.caption(
-            "Las experiencias enviadas requieren revisión antes de publicarse. "
-            "Evita incluir nombres, teléfonos, direcciones u otros datos "
-            "personales. No compartas contenido íntimo de otras personas."
+    try:
+        respuesta_videos = (
+            supabase.table("testimonios")
+            .select("id, nombre, video_url, fecha")
+            .eq("tipo", "video")
+            .eq("publicado", True)
+            .order("fecha", desc=True)
+            .execute()
         )
 
+        st.write("Respuesta recibida de Supabase:")
+        st.write(respuesta_videos.data)
+
+        videos_publicados = respuesta_videos.data
+
+        if videos_publicados:
+            for video in videos_publicados:
+                st.subheader(video["nombre"])
+                st.video(video["video_url"])
+                st.divider()
+        else:
+            st.info("No hay videos publicados.")
+
+    except Exception as error:
+        st.error("Error al consultar los videos:")
+        st.exception(error)
+
+    st.caption(
+        "Las experiencias enviadas requieren revisión antes de publicarse."
+    )
 
 elif page == "🎲 Zona interactiva":
 
