@@ -952,34 +952,6 @@ elif page == "🆘 Orientación y ayuda":
 # PANEL DE ADMINISTRACIÓN
 # -----------------------------------------
 
-elif page == "🔐 Administración":
-
-    title(
-        "Panel de administración",
-        "Espacio de gestión de los contenidos de Entre Líneas."
-    )
-
-    password = st.text_input(
-        "Contraseña de administración:",
-        type="password"
-    )
-
-    # La contraseña se guarda en Streamlit Secrets, nunca en el código.
-    if password and password == st.secrets["ADMIN_PASSWORD"]:
-
-        supabase_admin = conectar_supabase_admin()
-
-        st.success("Acceso al panel de administración.")
-
-        tab1, tab2 = st.tabs([
-            "🎬 Gestionar videos",
-            "📖 Revisar experiencias"
-        ])
-
-        # -----------------------------------------
-        # GESTIONAR VIDEOS
-        # -----------------------------------------
-
         with tab1:
 
             uploaded_videos = st.file_uploader(
@@ -1026,7 +998,6 @@ elif page == "🔐 Administración":
 
                             try:
 
-                                # Subir el archivo al bucket público.
                                 supabase_admin.storage.from_(
                                     "Videos testimonios"
                                 ).upload(
@@ -1043,14 +1014,12 @@ elif page == "🔐 Administración":
 
                                 archivo_subido = True
 
-                                # Obtener la URL pública del archivo.
                                 video_url = (
                                     supabase_admin.storage.from_(
                                         "Videos testimonios"
                                     ).get_public_url(nombre_archivo)
                                 )
 
-                                # Guardar título y URL en la tabla.
                                 supabase_admin.table(
                                     "testimonios"
                                 ).insert({
@@ -1066,9 +1035,6 @@ elif page == "🔐 Administración":
 
                             except Exception as error:
 
-                                # Si el archivo se subió pero falló el
-                                # registro en la tabla, borrar el archivo
-                                # para evitar dejarlo sin registro.
                                 if archivo_subido:
                                     try:
                                         supabase_admin.storage.from_(
@@ -1082,21 +1048,16 @@ elif page == "🔐 Administración":
                                 )
 
                     else:
-
                         st.error(
                             "Escribe un título para cada video."
                         )
 
             st.divider()
 
-            # -----------------------------------------
-            # VIDEOS DISPONIBLES
-            # -----------------------------------------
-
-
             st.subheader("Videos disponibles")
 
             try:
+
                 respuesta_videos = (
                     supabase_admin.table("testimonios")
                     .select("id, nombre, video_url, fecha")
@@ -1117,11 +1078,14 @@ elif page == "🔐 Administración":
                             st.write(video["nombre"])
 
                         with col2:
+
                             if st.button(
                                 "Eliminar",
                                 key=f"delete_video_{video['id']}"
                             ):
+
                                 try:
+
                                     ruta_url = urlparse(
                                         video["video_url"]
                                     ).path
@@ -1170,12 +1134,20 @@ elif page == "🔐 Administración":
                                         f"No se pudo eliminar el video: {error}"
                                     )
 
+                        st.video(video["video_url"])
+
+                else:
+                    st.info("Todavía no hay videos agregados.")
+
+            except Exception as error:
+                st.error("No pudimos cargar los videos guardados.")
+                st.write(str(error))
+
         # -----------------------------------------
         # REVISAR EXPERIENCIAS ESCRITAS
         # -----------------------------------------
 
         with tab2:
-
             st.subheader("Experiencias pendientes de revisión")
 
             if st.session_state.stories_pending:
