@@ -1093,10 +1093,10 @@ elif page == "🔐 Administración":
             # VIDEOS DISPONIBLES
             # -----------------------------------------
 
+
             st.subheader("Videos disponibles")
 
             try:
-
                 respuesta_videos = (
                     supabase_admin.table("testimonios")
                     .select("id, nombre, video_url, fecha")
@@ -1106,9 +1106,6 @@ elif page == "🔐 Administración":
                 )
 
                 videos_guardados = respuesta_videos.data
-
-                if videos_guardados:
-
 
                 if videos_guardados:
 
@@ -1165,6 +1162,7 @@ elif page == "🔐 Administración":
                                     st.success(
                                         "Video eliminado correctamente."
                                     )
+
                                     st.rerun()
 
                                 except Exception as error:
@@ -1173,6 +1171,14 @@ elif page == "🔐 Administración":
                                     )
 
                         st.video(video["video_url"])
+
+                else:
+                    st.info("Todavía no hay videos agregados.")
+
+            except Exception as error:
+                st.error("No pudimos cargar los videos guardados.")
+                st.write(str(error))
+
 
                 else:
                     st.info("Todavía no hay videos agregados.")
