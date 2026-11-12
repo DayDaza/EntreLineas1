@@ -559,7 +559,7 @@ elif page == "🌱 Salud mental y bienestar":
 # -----------------------------------------
 
 elif page == "💬 Experiencias compartidas":
-
+    st.error("PRUEBA: ESTAMOS EN EXPERIENCIAS COMPARTIDAS")
     tab1, tab2 = st.tabs([
         "📖 Historias escritas",
         "🎬 Videos"
