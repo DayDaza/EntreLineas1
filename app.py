@@ -614,45 +614,40 @@ elif page == "💬 Experiencias compartidas":
                     )
                 else:
                     st.warning("Por favor, escribe algo antes de enviar.")
-
     with tab2:
 
+        st.success("La pestaña de videos está funcionando.")
 
+        title("Videos y testimonios")
 
+        st.write("Estamos intentando conectar con Supabase.")
 
-    
-    st.success("La pestaña de videos está funcionando.")
+        try:
+            respuesta_videos = (
+                supabase.table("testimonios")
+                .select("id, nombre, video_url, fecha")
+                .eq("tipo", "video")
+                .eq("publicado", True)
+                .order("fecha", desc=True)
+                .execute()
+            )
 
-    title("Videos y testimonios")
+            st.write("Respuesta recibida de Supabase:")
+            st.write(respuesta_videos.data)
 
-    st.write("Estamos intentando conectar con Supabase.")
+            videos_publicados = respuesta_videos.data
 
-    try:
-        respuesta_videos = (
-            supabase.table("testimonios")
-            .select("id, nombre, video_url, fecha")
-            .eq("tipo", "video")
-            .eq("publicado", True)
-            .order("fecha", desc=True)
-            .execute()
-        )
+            if videos_publicados:
+                for video in videos_publicados:
+                    st.subheader(video["nombre"])
+                    st.video(video["video_url"])
+                    st.divider()
+            else:
+                st.info("No hay videos publicados.")
 
-        st.write("Respuesta recibida de Supabase:")
-        st.write(respuesta_videos.data)
-
-        videos_publicados = respuesta_videos.data
-
-        if videos_publicados:
-            for video in videos_publicados:
-                st.subheader(video["nombre"])
-                st.video(video["video_url"])
-                st.divider()
-        else:
-            st.info("No hay videos publicados.")
-
-    except Exception as error:
-        st.error("Error al consultar los videos:")
-        st.exception(error)
+        except Exception as error:
+            st.error("Error al consultar los videos:")
+            st.exception(error)
 
     st.caption(
         "Las experiencias enviadas requieren revisión antes de publicarse."
