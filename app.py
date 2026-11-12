@@ -202,21 +202,20 @@ with st.sidebar:
     st.markdown("# 💜 Entre Líneas")
     st.caption("Escuchar también transforma")
     st.divider()
-
-    page = st.radio(
-        "NAVEGACIÓN",
-        [
-            "🏠 Inicio",
-            "📱 Acoso y ciberacoso",
-            "💗 Sexualidad y respeto",
-            "🌱 Salud mental y bienestar",
-            "🎥 Experiencias compartidas",
-            "🎲 Zona interactiva",
-            "🆘 Orientación y ayuda",
-            "🔐 Administración"
-        ],
-        label_visibility="visible"
-    )
+page = st.radio(
+    "NAVEGACIÓN",
+    [
+        "🏠 Inicio",
+        "📱 Acoso y ciberacoso",
+        "💗 Sexualidad y respeto",
+        "🌱 Salud mental y bienestar",
+        "💬 Experiencias compartidas",
+        "🎲 Zona interactiva",
+        "🆘 Orientación y ayuda",
+        "🔐 Administración"
+    ],
+    label_visibility="visible"
+)
 
     st.divider()
     st.caption("Un espacio para escuchar, comprender, aprender y expresarse.")
