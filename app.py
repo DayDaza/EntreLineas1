@@ -952,6 +952,29 @@ elif page == "🆘 Orientación y ayuda":
 # PANEL DE ADMINISTRACIÓN
 # -----------------------------------------
 
+elif page == "🔐 Administración":
+
+    title(
+        "Panel de administración",
+        "Espacio de gestión de los contenidos de Entre Líneas."
+    )
+
+    password = st.text_input(
+        "Contraseña de administración:",
+        type="password"
+    )
+
+    if password and password == st.secrets["ADMIN_PASSWORD"]:
+
+        supabase_admin = conectar_supabase_admin()
+
+        st.success("Acceso al panel de administración.")
+
+        tab1, tab2 = st.tabs([
+            "🎬 Gestionar videos",
+            "📖 Revisar experiencias"
+        ])
+
         with tab1:
 
             uploaded_videos = st.file_uploader(
