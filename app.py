@@ -217,7 +217,6 @@ page = st.radio(
     label_visibility="visible"
 )
 
-    st.divider()
     st.caption("Un espacio para escuchar, comprender, aprender y expresarse.")
 
 
