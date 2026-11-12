@@ -617,6 +617,10 @@ elif page == "💬 Experiencias compartidas":
 
     with tab2:
 
+
+
+
+    
     st.success("La pestaña de videos está funcionando.")
 
     title("Videos y testimonios")
