@@ -1170,29 +1170,6 @@ elif page == "🔐 Administración":
                                         f"No se pudo eliminar el video: {error}"
                                     )
 
-                        st.video(video["video_url"])
-
-                else:
-                    st.info("Todavía no hay videos agregados.")
-
-            except Exception as error:
-                st.error("No pudimos cargar los videos guardados.")
-                st.write(str(error))
-
-
-                else:
-                    st.info("Todavía no hay videos agregados.")
-
-
-                else:
-
-                    st.info("Todavía no hay videos agregados.")
-
-            except Exception as error:
-
-                st.error("No pudimos cargar los videos guardados.")
-                st.write(str(error))
-
         # -----------------------------------------
         # REVISAR EXPERIENCIAS ESCRITAS
         # -----------------------------------------
