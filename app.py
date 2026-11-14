@@ -565,7 +565,6 @@ elif page == "🌱 Salud mental y bienestar":
 # -----------------------------------------
 
 elif page == "💬 Experiencias compartidas":
-    st.error("PRUEBA: ESTAMOS EN EXPERIENCIAS COMPARTIDAS")
     tab1, tab2 = st.tabs([
         "📖 Historias escritas",
         "🎬 Videos"
@@ -620,13 +619,10 @@ elif page == "💬 Experiencias compartidas":
                     )
                 else:
                     st.warning("Por favor, escribe algo antes de enviar.")
+
     with tab2:
 
-        st.success("La pestaña de videos está funcionando.")
-
         title("Videos y testimonios")
-
-        st.write("Estamos intentando conectar con Supabase.")
 
         try:
             respuesta_videos = (
@@ -638,23 +634,27 @@ elif page == "💬 Experiencias compartidas":
                 .execute()
             )
 
-            st.write("Respuesta recibida de Supabase:")
-            st.write(respuesta_videos.data)
-
             videos_publicados = respuesta_videos.data
 
             if videos_publicados:
+
                 for video in videos_publicados:
+
                     st.subheader(video["nombre"])
                     st.video(video["video_url"])
                     st.divider()
+
             else:
-                st.info("No hay videos publicados.")
+                st.info(
+                    "Todavía no hay videos publicados. "
+                    "Próximamente encontrarás testimonios aquí."
+                )
 
-        except Exception as error:
-            st.error("Error al consultar los videos:")
-            st.exception(error)
-
+        except Exception:
+            st.error(
+                "No pudimos cargar los videos en este momento. "
+                "Por favor, inténtalo más tarde."
+            )
     st.caption(
         "Las experiencias enviadas requieren revisión antes de publicarse."
     )
